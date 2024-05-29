@@ -64,3 +64,43 @@ export const createUser = async (
     token,
   });
 };
+
+export const loginUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Get user data
+    const { email, password } = req.body;
+    // Validation
+    if (!email || !password) {
+      const error = createHttpError(400, "All fields are required");
+      return next(error);
+    }
+    // Check if user exists
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      const error = createHttpError(404, "User not found");
+      return next(error);
+    }
+    // Check if password is correct
+    const isMatchPassword = await bcrypt.compare(password, user.password);
+    if (!isMatchPassword) {
+      const error = createHttpError(401, "Incorrect password");
+      return next(error);
+    }
+    // Token generation
+    const token = sign({ sub: user._id }, config.jwtSecret as string, {
+      expiresIn: "7d",
+    });
+    // Response
+    res.status(200).json({
+      message: "User logged in successfully",
+      data: user,
+      token,
+    });
+  } catch (error) {
+    return next(createHttpError(500, "Error from server side"));
+  }
+};
