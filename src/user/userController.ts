@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import createHttpError from "http-errors";
 import userModel from "./userModel";
 import bcrypt from "bcryptjs";
+import { config } from "../config/config";
+import { sign } from "jsonwebtoken";
 
 export const createUser = async (
   req: Request,
@@ -35,15 +37,15 @@ export const createUser = async (
   });
   await newUser.save();
 
-  //   response
-  res.status(201).json({
-    message: "user created successfully",
-    data: newUser,
+  //   token generation
+  const token = sign({ sub: newUser._id }, config.jwtSecret as string, {
+    expiresIn: "7d",
   });
 
   //   response
   res.status(201).json({
     message: "user created successfully",
     data: newUser,
+    token,
   });
 };
