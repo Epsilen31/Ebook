@@ -10,41 +10,56 @@ export const createUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  // get  user data
+  // Get user data
   const { name, email, password } = req.body;
 
-  // validation
+  // Validation
   if (!name || !email || !password) {
     const error = createHttpError(400, "All fields are required");
     return next(error);
   }
-  // database call
-  const user = await userModel.findOne({ email });
-  if (user) {
-    const error = createHttpError(400, "user already exist");
-    return next(error);
+
+  // Check if user already exists
+  try {
+    const user = await userModel.findOne({ email });
+    if (user) {
+      const error = createHttpError(400, "User already exists");
+      return next(error);
+    }
+  } catch (error) {
+    return next(createHttpError(500, "Error from server side"));
   }
 
-  //   hash password
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
+  // Hash password
+  let hashedPassword: string;
+  try {
+    const salt = await bcrypt.genSalt(10);
+    hashedPassword = await bcrypt.hash(password, salt);
+  } catch (error) {
+    return next(createHttpError(500, "Error hashing password"));
+  }
 
-  // create user
-  const newUser = new userModel({
-    name,
-    email,
-    password: hashedPassword,
-  });
-  await newUser.save();
+  // Create user
+  let newUser;
+  try {
+    newUser = new userModel({
+      name,
+      email,
+      password: hashedPassword,
+    });
+    await newUser.save();
+  } catch (error) {
+    return next(createHttpError(500, "Error creating user"));
+  }
 
-  //   token generation
+  // Token generation
   const token = sign({ sub: newUser._id }, config.jwtSecret as string, {
     expiresIn: "7d",
   });
 
-  //   response
+  // Response
   res.status(201).json({
-    message: "user created successfully",
+    message: "User created successfully",
     data: newUser,
     token,
   });
