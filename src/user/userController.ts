@@ -39,7 +39,6 @@ export const createUser = async (
   res.status(201).json({
     message: "user created successfully",
     data: newUser,
-    token,
   });
 
   //   response
