@@ -6,7 +6,7 @@ import path from "node:path";
 
 const upload = multer({
   dest: path.resolve(__dirname, "../../public/data/upload"),
-  limits: { fileSize: 3e7 },
+  limits: { fileSize: 10 * 1024 * 1024 },
 });
 
 // api routes

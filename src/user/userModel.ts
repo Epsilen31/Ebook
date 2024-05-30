@@ -1,11 +1,5 @@
 import mongoose from "mongoose";
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  password: string;
-}
+import { User } from "./bookTypes";
 
 const userSchema = new mongoose.Schema<User>(
   {
