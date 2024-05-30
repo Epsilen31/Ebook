@@ -5,5 +5,7 @@ export const createBook = async (
   res: Response,
   next: NextFunction
 ) => {
-  res.json({ message: "hell" });
+  try {
+    res.json({ message: "hell" });
+  } catch (err) {}
 };
