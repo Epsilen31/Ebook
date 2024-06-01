@@ -3,6 +3,7 @@ import cloudinary from "../config/cloudinary";
 import path from "node:path";
 import bookModel from "./bookModel";
 import { promises as fs } from "fs"; // for potential file cleanup
+import { AuthRequest } from "../middlewares/authenticate";
 
 export const createBook = async (
   req: Request,
@@ -51,12 +52,11 @@ export const createBook = async (
       format: "pdf",
     });
 
-    console.log("uploadResult", uploadResult);
-    console.log("bookUploadResult", bookUploadResult);
+    const _req = req as AuthRequest;
 
     const newBook = await bookModel.create({
       title,
-      auther: "6656d43f94a0fef126fd55b9", // Placeholder, should come from authenticated user
+      auther: _req.userId, // Placeholder, should come from authenticated user
       gener,
       coverImage: uploadResult.secure_url,
       file: bookUploadResult.secure_url,
