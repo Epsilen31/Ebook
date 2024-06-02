@@ -1,6 +1,6 @@
 import express from "express";
 const bookRouter = express.Router();
-import { createBook, updateBook } from "./bookController";
+import { createBook, updateBook, getAllBook } from "./bookController";
 import multer from "multer";
 import path from "node:path";
 import authenticate from "../middlewares/authenticate";
@@ -30,5 +30,7 @@ bookRouter.put(
   ]),
   updateBook
 );
+
+bookRouter.get("/getAllBook", getAllBook);
 
 export default bookRouter;

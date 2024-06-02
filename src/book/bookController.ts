@@ -182,3 +182,20 @@ export const updateBook = async (
       .json({ error: "An error occurred while updating the book" });
   }
 };
+
+export const getAllBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // ! todo -> add pagination
+    const books = await bookModel.find();
+    res.status(200).json({ message: "Books fetched successfully", books });
+  } catch (err) {
+    console.error(err);
+    return next(
+      createHttpError(500, "An error occurred while fetching the books")
+    );
+  }
+};
