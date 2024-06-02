@@ -199,3 +199,24 @@ export const getAllBook = async (
     );
   }
 };
+
+export const getSingleBook = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const bookId = req.params.id.trim();
+    const book = await bookModel.findById(bookId);
+    if (!book) {
+      const error = createHttpError(404, "Book not found");
+      return next(error);
+    }
+    res.status(200).json({ message: "Book fetched successfully", book });
+  } catch (err) {
+    console.error(err);
+    return next(
+      createHttpError(500, "An error occurred while fetching the book")
+    );
+  }
+};

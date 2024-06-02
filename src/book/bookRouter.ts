@@ -1,9 +1,16 @@
 import express from "express";
-const bookRouter = express.Router();
-import { createBook, updateBook, getAllBook } from "./bookController";
 import multer from "multer";
 import path from "node:path";
 import authenticate from "../middlewares/authenticate";
+
+const bookRouter = express.Router();
+
+import {
+  createBook,
+  updateBook,
+  getAllBook,
+  getSingleBook,
+} from "./bookController";
 
 const upload = multer({
   dest: path.resolve(__dirname, "../../public/data/upload"),
@@ -32,5 +39,6 @@ bookRouter.put(
 );
 
 bookRouter.get("/getAllBook", getAllBook);
+bookRouter.get("/getSingleBook/:id", getSingleBook);
 
 export default bookRouter;
