@@ -10,6 +10,7 @@ import {
   updateBook,
   getAllBook,
   getSingleBook,
+  deleteBook,
 } from "./bookController";
 
 const upload = multer({
@@ -40,5 +41,6 @@ bookRouter.put(
 
 bookRouter.get("/getAllBook", getAllBook);
 bookRouter.get("/getSingleBook/:id", getSingleBook);
+bookRouter.delete("/deleteBook/:id", authenticate, deleteBook);
 
 export default bookRouter;
