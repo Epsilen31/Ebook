@@ -9,8 +9,15 @@ const bookSchema = new mongoose.Schema<Book>(
     },
     auther: {
       type: String,
+      ref: "User",
       required: true,
     },
+
+    description: {
+      type: String,
+      required: true,
+    },
+
     gener: {
       type: String,
       required: true,

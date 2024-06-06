@@ -190,7 +190,7 @@ export const getAllBook = async (
 ) => {
   try {
     // ! todo -> add pagination
-    const books = await bookModel.find();
+    const books = await bookModel.find().populate("auther", "name");
     res.status(200).json({ message: "Books fetched successfully", books });
   } catch (err) {
     console.error(err);
@@ -207,7 +207,7 @@ export const getSingleBook = async (
 ) => {
   try {
     const bookId = req.params.id.trim();
-    const book = await bookModel.findById(bookId);
+    const book = await bookModel.findById(bookId).populate("auther", "name");
     if (!book) {
       const error = createHttpError(404, "Book not found");
       return next(error);
