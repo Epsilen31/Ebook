@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: config.forntendDomain,
+    origin: config.frontendDomain,
   })
 );
 

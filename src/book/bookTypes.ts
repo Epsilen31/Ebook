@@ -3,8 +3,8 @@ import { User } from "../user/bookTypes";
 export interface Book {
   _id: string;
   title: string;
-  auther: User;
-  gener: string;
+  author: User;
+  genre: string;
   description: string;
   coverImage: string;
   file: string;

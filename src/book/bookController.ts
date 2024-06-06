@@ -12,8 +12,7 @@ export const createBook = async (
   next: NextFunction
 ) => {
   try {
-    // Get user data
-    const { title, gener } = req.body;
+    const { title, description, genre } = req.body;
     console.log("files", req.files);
 
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
@@ -57,14 +56,17 @@ export const createBook = async (
 
     const newBook = await bookModel.create({
       title,
-      auther: _req.userId, // Placeholder, should come from authenticated user
-      gener,
+      author: _req.userId, // Placeholder, should come from authenticated user
+      description,
+      genre,
       coverImage: uploadResult.secure_url,
       file: bookUploadResult.secure_url,
     });
-    // Clean up local files (optional)
+
+    // Clean up local files
     await fs.unlink(coverImagePath);
     await fs.unlink(bookFilePath);
+
     res
       .status(201)
       .json({ message: "Book created successfully", book: newBook });
@@ -83,7 +85,7 @@ export const updateBook = async (
 ) => {
   try {
     // Get user data
-    const { title, gener } = req.body;
+    const { title, gener, description } = req.body;
     let bookId = req.params.id.trim();
 
     // Validation
@@ -101,7 +103,7 @@ export const updateBook = async (
 
     // Check if book belongs to user
     const _req = req as AuthRequest;
-    if (book.auther.toString() !== _req.userId) {
+    if (book.author.toString() !== _req.userId) {
       const error = createHttpError(401, "Unauthorized");
       return next(error);
     }
@@ -166,6 +168,7 @@ export const updateBook = async (
       {
         title,
         gener,
+        description,
         coverImage: coverImageUrl,
         file: fileUrl,
       },
@@ -190,7 +193,7 @@ export const getAllBook = async (
 ) => {
   try {
     // ! todo -> add pagination
-    const books = await bookModel.find().populate("auther", "name");
+    const books = await bookModel.find().populate("author", "name");
     res.status(200).json({ message: "Books fetched successfully", books });
   } catch (err) {
     console.error(err);
@@ -235,7 +238,7 @@ export const deleteBook = async (
     }
     // Check if book belongs to user
     const _req = req as AuthRequest;
-    if (book.auther.toString() !== _req.userId) {
+    if (book.author.toString() !== _req.userId) {
       const error = createHttpError(401, "Unauthorized");
       return next(error);
     }

@@ -7,18 +7,16 @@ const bookSchema = new mongoose.Schema<Book>(
       type: String,
       required: true,
     },
-    auther: {
-      type: String,
+    author: {
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-
     description: {
       type: String,
       required: true,
     },
-
-    gener: {
+    genre: {
       type: String,
       required: true,
     },
