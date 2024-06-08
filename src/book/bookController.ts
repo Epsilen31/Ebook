@@ -210,7 +210,7 @@ export const getSingleBook = async (
 ) => {
   try {
     const bookId = req.params.id.trim();
-    const book = await bookModel.findById(bookId).populate("auther", "name");
+    const book = await bookModel.findById(bookId).populate("author", "name");
     if (!book) {
       const error = createHttpError(404, "Book not found");
       return next(error);
